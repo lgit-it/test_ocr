@@ -40,7 +40,10 @@ def filter_text(input_text, banned_words_file):
         input_text = re.sub(r'\b{}\b'.format(re.escape(word)), ' ', input_text)
 
     # Elimina tutte le doppie spaziature
-    input_text = re.sub(r'\s+', ' ', input_text)
+    input_text = re.sub(r'  ', ' ', input_text)
+    
+    #input_text = re.sub(r'\s+', ' ', input_text)
+
 
     # Rimuove le righe con meno di 4 caratteri
     filtered_lines = []
@@ -48,7 +51,9 @@ def filter_text(input_text, banned_words_file):
         if len(line.strip()) >= 4:
             filtered_lines.append(line)
 
-    return '\n'.join(filtered_lines)
+    result_text = re.sub(r'\n\n', '\n', '\n'.join(filtered_lines))
+
+    return result_text
 
 # ... Il resto del codice rimane invariato ...
 
@@ -83,7 +88,7 @@ def process_pdfs(directory, output_dir):
                 image = convert_pdf_page_to_image(page)
                 text = ocr_image_to_text(image)
                 # Filtra il testo
-                filtered_text = filter_text(text)
+                filtered_text = filter_text(text,banned_words_file)
 
 
                 full_txt_path = os.path.join(output_dir, f"{filename}.txt")
