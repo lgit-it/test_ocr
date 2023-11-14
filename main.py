@@ -100,6 +100,8 @@ def process_pdfs(directory, output_dir):
                 new_pdf.close()
 
             pdf.close()
-
+            #rename the pdf file to .old
+            os.rename(full_pdf_path, full_pdf_path + '.old')
+            
 process_pdfs(pdf_dir, png_dir)
 print("Done")
