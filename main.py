@@ -15,9 +15,10 @@ pytesseract.pytesseract.tesseract_cmd = config['DEFAULT']['TesseractCmd']
 # Assumi che banned_words_file sia il percorso del tuo file di parole vietate
 banned_words_file = config['DEFAULT']['BannedWords']
 
-pdf_dir = config['DEFAULT']['PDFDirectory']
-png_dir = config['DEFAULT']['OutputDirectory']
-os.makedirs(png_dir, exist_ok=True)  # Assicurati che la directory di output esista
+pdf_source_dir = config['DEFAULT']['PDF_Source_Dir']
+pdf_dest_dir = config['DEFAULT']['PDF_Dest_Dir']
+txt_dest_dir = config['DEFAULT']['TXT_Dest_Dir']
+os.makedirs(pdf_dest_dir, exist_ok=True)  # Assicurati che la directory di output esista
 
 import re
 
@@ -76,7 +77,7 @@ def create_text_pdf_page(pdf, text, page_number):
     page.insert_text((72, 72), text, fontsize=8)
     return new_pdf
 
-def process_pdfs(directory, output_dir):
+def process_pdfs(directory, output_dir,txt_dest_dir):
     for pdf_file in os.listdir(directory):
         if pdf_file.endswith('.pdf'):
             full_pdf_path = os.path.join(directory, pdf_file)
@@ -91,7 +92,7 @@ def process_pdfs(directory, output_dir):
                 filtered_text = filter_text(text,banned_words_file)
 
 
-                full_txt_path = os.path.join(output_dir, f"{filename}.txt")
+                full_txt_path = os.path.join(txt_dest_dir, f"{filename}.txt")
                 save_text_to_file(filtered_text, full_txt_path)
 
                 new_pdf = create_text_pdf_page(pdf, filtered_text, page.number)
@@ -103,5 +104,5 @@ def process_pdfs(directory, output_dir):
             #rename the pdf file to .old
             os.rename(full_pdf_path, full_pdf_path + '.old')
             
-process_pdfs(pdf_dir, png_dir)
+process_pdfs(pdf_source_dir, pdf_dest_dir)
 print("Done")
